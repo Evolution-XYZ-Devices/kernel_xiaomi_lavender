@@ -3,9 +3,12 @@
 # link vmlinux
 #
 # vmlinux is linked from the objects selected by $(KBUILD_VMLINUX_INIT) and
-# $(KBUILD_VMLINUX_MAIN). Most are built-in.o files from top-level directories
-# in the kernel tree, others are specified in arch/$(ARCH)/Makefile.
-# Ordering when linking is important, and $(KBUILD_VMLINUX_INIT) must be first.
+# $(KBUILD_VMLINUX_MAIN) and $(KBUILD_VMLINUX_LIBS). Most are built-in.o files
+# from top-level directories in the kernel tree, others are specified in
+# arch/$(ARCH)/Makefile. Ordering when linking is important, and
+# $(KBUILD_VMLINUX_INIT) must be first. $(KBUILD_VMLINUX_LIBS) are archives
+# which are linked conditionally (not within --whole-archive), and do not
+# require symbol indexes added.
 #
 # vmlinux
 #   ^
@@ -15,6 +18,9 @@
 #   |
 #   +--< $(KBUILD_VMLINUX_MAIN)
 #   |    +--< drivers/built-in.o mm/built-in.o + more
+#   |
+#   +--< $(KBUILD_VMLINUX_LIBS)
+#   |    +--< lib/lib.a + more
 #   |
 #   +-< ${kallsymso} (see description in KALLSYMS section)
 #
