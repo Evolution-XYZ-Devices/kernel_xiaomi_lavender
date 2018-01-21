@@ -2164,6 +2164,8 @@ static void try_to_wake_up_local(struct task_struct *p)
 	if (!task_on_rq_queued(p)) {
 		u64 wallclock = walt_ktime_clock();
 
+		wallclock = walt_ktime_clock();
+
 		walt_update_task_ravg(rq->curr, rq, TASK_UPDATE, wallclock, 0);
 		walt_update_task_ravg(p, rq, TASK_WAKE, wallclock, 0);
 		ttwu_activate(rq, p, ENQUEUE_WAKEUP);
@@ -2519,6 +2521,7 @@ void wake_up_new_task(struct task_struct *p)
 	unsigned long flags;
 	struct rq *rq;
 
+	walt_init_new_task_load(p);
 	raw_spin_lock_irqsave(&p->pi_lock, flags);
 	p->state = TASK_RUNNING;
 
@@ -3082,9 +3085,12 @@ void scheduler_tick(void)
 	walt_set_window_start(rq);
 	walt_update_task_ravg(rq->curr, rq, TASK_UPDATE,
 			walt_ktime_clock(), 0);
+	walt_set_window_start(rq);
 	update_rq_clock(rq);
 	curr->sched_class->task_tick(rq, curr, 0);
 	update_cpu_load_active(rq);
+	walt_update_task_ravg(rq->curr, rq, TASK_UPDATE,
+			walt_ktime_clock(), 0);
 	calc_global_load_tick(rq);
 	raw_spin_unlock(&rq->lock);
 

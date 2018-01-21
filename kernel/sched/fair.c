@@ -6641,6 +6641,11 @@ static inline int find_best_target(struct task_struct *p, int *backup_cpu,
 			if (new_util > capacity_orig)
 				continue;
 
+#ifdef CONFIG_SCHED_WALT
+			if (walt_cpu_high_irqload(i))
+				continue;
+#endif
+
 			/*
 			 * Pre-compute the maximum possible capacity we expect
 			 * to have available on this CPU once the task is
