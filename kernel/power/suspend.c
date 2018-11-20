@@ -36,10 +36,13 @@
 #include <linux/gpio.h>
 #include "power.h"
 
+#include <linux/gpio.h>
+extern int slst_gpio_base_id;
+#define PROC_AWAKE_ID 12 /* 12th bit */
+
 const char *pm_labels[] = { "mem", "standby", "freeze", NULL };
 const char *pm_states[PM_SUSPEND_MAX];
 
-extern int PROC_AWAKE_ID; /* 12th bit */
 extern int slst_gpio_base_id;
 unsigned int pm_suspend_global_flags;
 EXPORT_SYMBOL_GPL(pm_suspend_global_flags);
